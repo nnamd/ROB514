@@ -115,9 +115,16 @@ def get_pts_as_numpy_array(obj):
     """ Get the points out as a 3xn array, last row 1'x (i.e., homogenous points)
     @param obj - the object
     @return numpy array of XYs"""
-    pts = None
-# YOUR CODE HERE
-    return pts
+    x = []
+    y = []
+    ones = []
+    listOfPoints = obj["XYs"]
+    for pt in listOfPoints:
+        x.append(pt[0])
+        y.append(pt[1])
+        ones.append(1)
+    result = np.array([x,y,ones])
+    return result
 
 
 # --------------------------- Worlds ------------------
