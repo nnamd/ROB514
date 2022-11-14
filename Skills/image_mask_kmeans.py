@@ -6,9 +6,9 @@
 # There are no shortage of kmeans implementations out there - using scipy's
 import numpy as np
 from scipy.cluster.vq import kmeans, vq, whiten
-
+import imageio  
 # Using imageio to read in the images and skimage to do the color conversion
-import imageio
+
 from skimage.color import rgb2hsv
 import matplotlib.pyplot as plt
 
@@ -46,6 +46,8 @@ def read_and_cluster_image(image_name, use_hsv, n_clusters):
     # TODO
     # Step 1: If use_hsv is true, convert the image to hsv (see skimage rgb2hsv - skimage has a ton of these
     #  conversion routines)
+
+
     # Step 2: reshape the data to be an nx3 matrix
     #   kmeans assumes each row is a data point. So you have to give it a (widthXheight) X 3 matrix, not the image
     #   data as-is (WXHX3). See numpy reshape.

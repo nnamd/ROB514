@@ -34,6 +34,9 @@ def vector_to_goal(arm_with_angles, target):
     # TODO:
     #   Get the gripper/grasp location using get_gripper_location
     #   Calculate and return the vector
+    grasp_location = afk.get_gripper_location(arm_with_angles)
+    vector = (target[0]-grasp_location[0],target[1]-grasp_location[1])
+    return vector 
 # YOUR CODE HERE
 
 
@@ -49,7 +52,9 @@ def distance_to_goal(arm_with_angles, target):
     """
 
     # TODO: Call the function above, then return the vector's length
-# YOUR CODE HERE
+    # YOUR CODE HERE
+    vector = vector_to_goal(arm_with_angles, target)
+    return np.sqrt(vector[0]^2+vector[1]^2)
 
 
 def calculate_gradient(arm, angles, target):
@@ -77,7 +82,34 @@ def calculate_gradient(arm, angles, target):
     #   Calculate (f(x+h) - f(x)) / h and append that to the derivs list
     # Step 3: Do the wrist/gripper angle the same way (but remember, that angle
     #   is stored in angles[-1][0])
-# YOUR CODE HERE
+    # YOUR CODE HERE
+    distance = distance_to_goal(arm,target)
+    updated_angles = np.copy(angles)
+    for i in len(angles[:-1]):
+        #tweak the angle
+        updated_angles[i] = angles[i]+h
+        #update the geometry
+        afk.set_angles_of_arm_geometry(arm, updated_angles)
+        #check new distance
+        new_distance = distance_to_goal(arm,target)
+        #calculate derivative
+        derivative = (new_distance-distance)/h 
+        derivs.append(derivative)
+        #move back
+        updated_angles[i] = angles[i]-h
+        afk.set_angles_of_arm_geometry(arm, updated_angles)
+
+    #wrist calculation
+    updated_angles[-1][0] = angles[-1][0]+h 
+    afk.set_angles_of_arm_geometry(arm, updated_angles)
+    #check new distance
+    new_distance = distance_to_goal(arm,target)
+    #calculate derivative
+    derivative = (new_distance-distance)/h 
+    derivs.append(derivative)
+    #move back
+    updated_angles[-1][0] = angles[-1][0]-h
+    afk.set_angles_of_arm_geometry(arm, updated_angles)
     return derivs
 
 
